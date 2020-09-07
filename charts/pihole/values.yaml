@@ -9,6 +9,15 @@ image:
   tag: v5.1.1
   pullPolicy: IfNotPresent
 
+serviceAdmin:
+  type: NodePort
+  externalTrafficPolicy: Local
+  loadBalancerIP: ""
+    # a fixed LoadBalancer IP
+  annotations: {}
+    # metallb.universe.tf/address-pool: network-services
+    # metallb.universe.tf/allow-shared-ip: pihole-svc
+
 serviceTCP:
   type: NodePort
   externalTrafficPolicy: Local

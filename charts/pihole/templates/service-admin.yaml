@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "pihole.fullname" . }}-admin
+  labels:
+    app: {{ template "pihole.name" . }}
+    chart: {{ template "pihole.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.serviceAdmin.annotations }}
+  annotations:
+{{ toYaml .Values.serviceAdmin.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.serviceAdmin.type }}
+  {{- if .Values.serviceAdmin.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.serviceAdmin.loadBalancerIP }}
+  {{- end }}
+  {{- if or (eq .Values.serviceAdmin.type "NodePort") (eq .Values.serviceAdmin.type "LoadBalancer") }}
+  externalTrafficPolicy: {{ .Values.serviceAdmin.externalTrafficPolicy }}
+  {{- end }}
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 443
+      targetPort: https
+      protocol: TCP
+      name: https
+  selector:
+    app: {{ template "pihole.name" . }}
+    release: {{ .Release.Name }}
